@@ -2,10 +2,10 @@
 
 namespace backend\models;
 
-use yii\db\ActiveRecord;
+//use yii\db\ActiveRecord;
+use yii\base\Model;
 
-
-class HourlySession extends ActiveRecord
+class HourlySession extends Model
 {
     public $id;
     public $user_id;
