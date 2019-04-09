@@ -42,6 +42,7 @@ use backend\models\TempPass;
 use backend\models\DriversFacilities;
 use backend\models\TaxiParkServices;
 use backend\models\DriversAccess;
+use backend\models\HourlySession;
 use backend\models\IntercityPricelist;
 use backend\models\UsersPrivileges;
 use backend\models\Privileges;
@@ -54,6 +55,34 @@ use yii\web\User;
 class AccountController extends Controller
 {
 
+
+    public function actionOpenHourlySession(){
+        $token = $_POST['token'];
+        $user = Users::findOneUser($token);
+        if($user){
+            $session = new HourlySession();
+            $session->user_id = $user->id;
+            $session->start_point = strtotime('now');
+            if($session->validate()){
+                $session->save();
+                $response["state"] = 'success';
+                Yii::$app->response->statusCode = 200;
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $response;
+            }else{
+                $response["state"] = 'error';
+                $response["error"] = $session->errors;
+                Yii::$app->response->statusCode = 200;
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $response;
+            }
+        }else{
+            $response["state"] = 'unauthorized';
+            Yii::$app->response->statusCode = 401;
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $response;
+        }
+    }
     
 
     public function actionKassa(){
